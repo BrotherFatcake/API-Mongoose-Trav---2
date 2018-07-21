@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: IbFsGPVRJr/pKZJpi684eeRk4Z9GLlUZZE6tHCU7YZG7fFenxKYn8k3VGHvsY+L1+i3TLui7pxhbpeXa5RCkwpUOistrXAQBxt80dUjHJvnS9WgM/F4R/dNbYuiwFkPmil9OsdR7evkYoXdeZpn2akw2xzn4m++wTSzWtElgPw8MlnT+QcJfjk/XijO6uONpRKi7XqJkdpCrsdiabRBFDpAYalpQOK7LgJgv7zzXV0A+NjBeBBGsjDqT2n0ubIC/6u7xWCMyzGRwqY9KonFtINgYAw/71ufQQwq8NyDCMbkDmkIEutdPKnJtJoRc87jUynK7LUcydeo2DzDhSldaAUBc83o9KC00lTA3tx4AlVqyzPZkqJtyINThPZtrm8DGRdWTXMyKzxdJbJalC/FGiYeus5xvg6Ip1jH4MD8ul/ZPBZSb+LxVv0hO1r+T+CXKQOFbRMEkau5poiSHm7IhD9TnC1KhB6ad7kMjIkfE1rP11PdcfWA6LvN47jbWXrLG6WodkQTOfyUFK/CUdaoPBPEGIgJ/gJMpjkZ7kKnx/trk/+Z6clhQLQ+Npya5KvoOdhUw506PziHYOvQy7mBVVcoTnAkqfNNvBvG4zUfXrGaY6ROA7b4zloBlqyL/Qsml/9QYwd5v7MHnIxVCcUYpfy9Sepj+V3eIgiR8khtPIpo=
+  app: powerful-thicket-89873
+  on:
+    repo: BrotherFatcake/API-Mongoose-Trav---1
