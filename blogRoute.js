@@ -8,8 +8,10 @@ const express = require('express');
 //Create a constant of router equal express Router with no args
 const router = express.Router();
 
-//Create const of {model} to import(require) models.js
-const {blogModel} = require('./models');
+
+//create const of Primary {modelName}  OR {modelName1, modelName2} to require models file
+const {authorModel, blogModel} = require('./models');
+
 
 //At bottom of file
 //module exports the const router
@@ -21,6 +23,7 @@ const {blogModel} = require('./models');
 //**Needed for all CRUD**
 //**If part of server.js use 'app.' instead of 'router.' and '/endPointName' and '/endPointName/:id' instead of '/' and '/:id'**
 
+
 //GET - ALL
 
 //call router or app get from '/' with args request response =>
@@ -28,7 +31,7 @@ router.get('/', (req,res) => {
     //modelName find with no args
     blogModel.find()
     //then with arg <DB collectionName> =>
-    .then(blogposts =>    {
+    .then(blogposts    =>    {
         //respond with json object key/val pair, key is <DB collectionName> and val is <DB collectionName> map
         res.json({blogposts: blogposts.map(
             
@@ -43,9 +46,10 @@ router.get('/', (req,res) => {
         //log error err to console
         console.error(err)
         //respond status 500 and json object message stating error ocurred
-        res.status(500).json({"error message": 'unable to find id'});
+        res.status(500).json({"error message": 'Something is broken'});
     });
 });
+
 
 
 
@@ -55,12 +59,12 @@ router.get('/', (req,res) => {
 router.get('/:id', (req, res) => {
     //modelName findById with args request params id
     blogModel.findById(req.params.id)
-   
+    
     //then dataName => respond json non-object with arg of dataName cleanUp method
-        //where data name (ex. student or post or data) is the object being returned
+    //where data name (ex. student or post or data) is the object being returned
 
     .then(post => {
-        res.json(post.cleanUp())
+       res.json(post.cleanUp())
     })
 
     //ERROR CATCHER
@@ -72,6 +76,7 @@ router.get('/:id', (req, res) => {
         res.status(500).json({"error message": 'unable to find id'})
     });
 });
+
 
 
 
@@ -103,32 +108,69 @@ router.post('/', (req,res) => {
 
         }
     }
-    
-    //CREATE NEW DB OBJECT
-    //modelName create {object} that contains the key req body pair values
-    blogModel.create({
-        //Within object {key1: req.body.val1, ley2: req.body.val2}
-        //If key/val has sub-key/val they do not need to be specified here it would be specified 
+
+    //Verify unique post value exists in Primary Collection
+    //primaryModel find by id {req.body.key}
+    authorModel.findById(req.body.author)
+
+    //then dataName => 
+        .then(author => {
+         
+            //IF not dataName 
+            if (!(author))  {
+            //create const for error message naming missing field from body
+                const errMessage = 'author id not found';
+            //log the error to console with arg errMessage
+                console.error(errMessage);
+            //return response status 400 and send errMessage
+                return res.status(400).send(errMessage);   
+            }
+
+        //ELSE when dataName does not already exist continue with creation
+            else    {
+
+        //CREATE NEW DB OBJECT
+        //modelName create {object} that contains the key req body pair values
+        blogModel.create({
+            //Within object {key1: req.body.val1, ley2: req.body.val2}
+            //If key/val has sub-key/val they do not need to be specified here it would be specified 
             //in the POST request sent from postman
             title: req.body.title,
             content: req.body.content,
             author: req.body.author
         })
+
         .then(post => {
             //then dataName => respond status 201 and json dataName send through cleanUp
-                //where data name (ex. student or post or data) is the object being returned
-            res.status(201).json(post.cleanUp())
+            //where data name (ex. student or post or data) is the object being returned
+            res.status(201).json({id: post.id, author: `${author.firstName} ${author.lastName}`, content: post.content, title: post.title, comments: post.comments}) 
+            
+            
         })
-    
-    //ERROR CATCHER
-    //catch err =>
-    .catch(err => {
-        //log error err to console
-        console.error(err)
-        //respond status 500 with json message stating error ocurred
-        res.status(500).json({"error message": 'unable to post data'})
-
+                
+        //ERROR CATCHER
+        //catch err =>
+                .catch(err => {
+                    //log error err to console
+                    console.error(err)
+                    //respond status 500 with json message stating error ocurred
+                    res.status(500).json({"error message": 'something is wrong'})
+                    
+                });
+            }
     })
+
+    //END flow for unique check
+
+            //ERROR CATCHER
+        //catch err =>
+        .catch(err => {
+            //log error err to console
+            console.error(err)
+            //respond status 500 with json message stating error ocurred
+            res.status(500).json({"error message": 'bam unable to post data'})
+            
+        }) 
     
 });
 
@@ -137,25 +179,25 @@ router.post('/', (req,res) => {
 
 //call router or app put from '/:id' with args request response =>
 router.put('/:id', (req,res) => {
-
+                
     //IF NOT request params id AND request body id AND request params id strict equal request body id 
     if(!(req.params.id && req.body.id && req.params.id === req.body.id)) {
-
+        
         //create const for error message stating request params id AND request body id must match
         const putErrMessage = `${req.params.id} and ${req.body.id} must match`
         
         //log the error to console with arg errMessage
         console.error(putErrMessage)
-
+        
         //return response status 400 and send errMessage
         return res.status(400).send(putErrMessage);
     }
     
     //create const of empty object for fields to update
     const toUpdate = {};
-
+    
     //create const array of fields that are allowed to be updated
-    const updateAllowed = ['title', 'content', 'author'];
+    const updateAllowed = ['title', 'content'];
 
     //for each canUpdate with arg dataArg =>
     updateAllowed.forEach(data => {

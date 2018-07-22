@@ -16,15 +16,18 @@ const mongoose = require('mongoose');
 //create const expect to assert chai expect
 const expect = chai.expect;
 
-//Create const of {model} to require models.js.  {model} = model name defined in models.js
-const {blogModel} = require('../models');
+//create const of Primary {modelName} to import  OR {modelName1, modelName2}
+//const {authorModel} = require('./models');
+
+//Create const of Secondary {modelName} to import(require) models.js
+const {blogModel, authorModel} = require('./models');
 
 //create const of object app, runServer, closeServer to require server.js
 const {app, startServer, stopServer} = require('../server');
 
 //Create const of TEST_DATABASE_URL to require config.js
 
-const TEST_DATABASE_URL = 'mongodb://localhost/test-blog-app';
+const TEST_DATABASE_URL = require('../config');     //'mongodb://localhost/test-blog-app-2';
 
 //const TEST_DATABASE_URL = require('../config');
 

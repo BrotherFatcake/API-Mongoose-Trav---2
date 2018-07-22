@@ -16,8 +16,11 @@ mongoose.Promise = global.Promise;
 //Create const of PORT, DATABASE_URL to import(require) config.js
 const {PORT, DATABASE_URL} = require('./config');
 
-//Create const of {model} to import(require) models.js.  {model} = model name defined in models.js
-const {blogModel} = require('./models');
+//create const of Primary {modelName}  OR {modelName1, modelName2} to require models file
+const {authorModel, blogModel} = require('./models');
+
+//Create const of Secondary {modelName} to import(require) models.js
+//const {blogModel} = require('./models');
 
 //Create constant that creates a new app instance by calling top level express function
 const app = express();
@@ -31,11 +34,15 @@ app.use(morgan('common'));
 
 //**If using Express Routing by putting CRUD code in separate JS file**
 
-//Create const for new `constNameRoute` (can name it anything) to import(require) routeFile.js (can name it anything)
-const blogRoute = require('./route');
+//Create const for new `constNameRoute` (can name it anything) to import(require) routeFile.js (can name it anything) *duplicate for multiple route files
+const blogRoute = require('./blogRoute');
 
-//tell app to use args of '/endPointName' and const specified for 'constNameRoute'
+const authorRoute = require('./authorRoute');
+
+//tell app to use args of '/endPointName' and const specified for 'constNameRoute' *duplicate for multiple route files
 app.use('/blogs', blogRoute);
+
+app.use('/authors', authorRoute);
 
 //**End Express Routing specific**
 
