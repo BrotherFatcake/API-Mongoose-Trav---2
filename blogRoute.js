@@ -143,7 +143,9 @@ router.post('/', (req,res) => {
         .then(post => {
             //then dataName => respond status 201 and json dataName send through cleanUp
             //where data name (ex. student or post or data) is the object being returned
-            res.status(201).json({id: post.id, author: `${author.firstName} ${author.lastName}`, content: post.content, title: post.title, comments: post.comments}) 
+            res.status(201).json(post.cleanUp())
+            
+            //.json({id: post.id, author: `${author.firstName} ${author.lastName}`, content: post.content, title: post.title, comments: post.comments}) 
             
             
         })
